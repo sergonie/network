@@ -23,9 +23,9 @@
     "coverage": "vendor/bin/phpunit --coverage-html ./coverage"
   },
   "require": {
+    "php": ">=7.4.0",
     "ext-swoole": "^4.5",
     "igniphp/exception": ">=1.0",
-    "php": ">=7.3.0",
     "psr/http-factory": "^1.0",
     "psr/http-message": "^1.0",
     "psr/http-server-middleware": "^1.0",
