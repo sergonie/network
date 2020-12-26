@@ -25,19 +25,28 @@ final class ServerTest extends TestCase
         self::assertInstanceOf(Server::class, new Server(new Configuration(), new NullLogger(), Mockery::mock(HandlerFactory::class)));
     }
 
-    public function testStartAndStop(): void
+    protected function assertStartAndStop(Configuration $configuration): void
     {
-        $configuration = new Configuration();
         $logger = Mockery::mock(LoggerInterface::class);
         $handlerFactory = $this->mockHandlerFactory($configuration, $listeners);
+        $expected_listeners = ['Connect', 'Close', 'Shutdown', 'Receive'];
+        if ($configuration->getMode() === SWOOLE_PROCESS) {
+            $expected_listeners[] = 'Start';
+        }
 
         /** @var Server|Mockery\MockInterface $server */
         $server = new Server($configuration, $logger, $handlerFactory);
         $server->start();
-        self::assertSame(['Connect', 'Close', 'Shutdown', 'Start', 'Receive'], array_keys($listeners));
+        self::assertSame($expected_listeners, array_keys($listeners));
         self::assertTrue($server->isRunning());
         $server->stop();
         self::assertFalse($server->isRunning());
+    }
+
+    public function testStartAndStop(): void
+    {
+        $this->assertStartAndStop(new Configuration());
+        $this->assertStartAndStop(new Configuration());
     }
 
     public function testGetConfig(): void
@@ -73,7 +82,10 @@ final class ServerTest extends TestCase
 
     public function testOnStartListener(): void
     {
-        $server = $this->mockServer($listeners);
+        $conf = new Configuration();
+        $conf->setMode(SWOOLE_PROCESS);
+
+        $server = $this->mockServer($listeners, $conf);
         $onStart = Mockery::mock(Server\OnStartListener::class);
         $onStart
             ->shouldReceive('onStart')
@@ -239,9 +251,9 @@ final class ServerTest extends TestCase
         return $handlerFactory;
     }
 
-    private function mockServer(&$listeners = []): Server
+    private function mockServer(&$listeners = [], ?Configuration $configuration = null): Server
     {
-        $configuration = new Configuration();
+        $configuration = $configuration ?? new Configuration();
         $handlerFactory = $this->mockHandlerFactory($configuration, $listeners);
 
         return new Server($configuration, new NullLogger(), $handlerFactory);

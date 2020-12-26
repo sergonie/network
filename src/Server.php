@@ -207,7 +207,11 @@ class Server implements HandlerFactory
         $this->createOnConnectListener();
         $this->createOnCloseListener();
         $this->createOnShutdownListener();
-        $this->createOnStartListener();
+
+        if ($this->configuration->getMode() === SWOOLE_PROCESS) {
+            $this->createOnStartListener();
+        }
+
         $this->createOnReceiveListener();
     }
 
