@@ -276,10 +276,11 @@ class ServerRequest extends Request implements ServerRequestInterface
     public static function fromSwoole(SwooleHttRequest $request): ServerRequest
     {
         $serverParams  = $request->server ?? [];
-        if (isset($request->server['query_string'])) {
-            $uri = $request->server['request_uri'] . '?' . $request->server['query_string'];
-        } else {
-            $uri = $request->server['request_uri'];
+
+        $uri = '';
+        if (isset($request->server['request_uri'])) {
+            $uri = $request->server['request_uri'] .
+                ($request->server['query_string'] ? '?' . $request->server['query_string'] : '');
         }
 
         // Normalize server params

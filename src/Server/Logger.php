@@ -58,7 +58,7 @@ class Logger implements LoggerInterface
     {
         foreach ($context as $key => $value) {
             $search = sprintf('{%s}', $key);
-            $message = str_replace($search, $value, $message);
+            $message = str_replace($search, (string)$value, (string)$message);
         }
 
         printf('[%s][%s] - %s%s', (new DateTime('now', new DateTimeZone('UTC')))->format('Y-m-d H:i:s'), strtoupper($level), $message, PHP_EOL);
