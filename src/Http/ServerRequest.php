@@ -280,7 +280,7 @@ class ServerRequest extends Request implements ServerRequestInterface
         $uri = '';
         if (isset($request->server['request_uri'])) {
             $uri = $request->server['request_uri'] .
-                ($request->server['query_string'] ? '?' . $request->server['query_string'] : '');
+                (isset($request->server['query_string']) ? '?' . $request->server['query_string'] : '');
         }
 
         // Normalize server params
