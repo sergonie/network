@@ -3,3 +3,4 @@
 /coverage.clover
 .DS_Store
 /coverage
+composer.lock
