@@ -6,8 +6,8 @@ use Igni\Network\Exception\InvalidArgumentException;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\StreamInterface;
 use Psr\Http\Message\UriInterface;
-use Zend\Diactoros\RequestTrait;
-use Zend\Diactoros\Uri;
+use Laminas\Diactoros\RequestTrait;
+use Laminas\Diactoros\Uri;
 
 /**
  * PSR-7 implementation of RequestInterface.

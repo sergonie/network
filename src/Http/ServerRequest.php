@@ -8,8 +8,8 @@ use Psr\Http\Message\UploadedFileInterface;
 use Swoole\Http\Request as SwooleHttRequest;
 use Throwable;
 
-use function Zend\Diactoros\marshalHeadersFromSapi;
-use function Zend\Diactoros\normalizeUploadedFiles;
+use function Laminas\Diactoros\marshalHeadersFromSapi;
+use function Laminas\Diactoros\normalizeUploadedFiles;
 
 class ServerRequest extends Request implements ServerRequestInterface
 {

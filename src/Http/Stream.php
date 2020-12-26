@@ -4,7 +4,7 @@ namespace Igni\Network\Http;
 
 use Igni\Exception\InvalidArgumentException;
 use Psr\Http\Message\StreamInterface;
-use Zend\Diactoros\Stream as BaseStream;
+use Laminas\Diactoros\Stream as BaseStream;
 
 use function strpos;
 use function is_string;

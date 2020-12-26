@@ -9,7 +9,7 @@ use JsonSerializable;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\StreamInterface;
 use SimpleXMLElement;
-use Zend\Diactoros\MessageTrait;
+use Laminas\Diactoros\MessageTrait;
 
 use function is_array;
 use function is_string;
