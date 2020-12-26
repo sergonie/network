@@ -1,13 +1,15 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Igni\Network\Server;
 
+use Igni\Exception\InvalidArgumentException;
 use Igni\Network\Exception\ConfigurationException;
-use Psr\Log\LoggerInterface;
-use Psr\Log\NullLogger;
 
 /**
  * Class ServerConfiguration
+ *
  * @package Igni\Http\Server
  */
 class Configuration
@@ -47,31 +49,64 @@ class Configuration
      */
     public const DEFAULT_PORT = 80;
 
-    /**
-     * @var array
-     */
-    private $settings = [];
+    protected string $address;
+
+    protected int $port;
+
+    protected int $mode;
+
+    protected array $settings = [];
+
+    protected int $compression_level = 0;
 
     /**
      * HttpConfiguration constructor.
      *
      * @param string $address
-     * @param int $port
+     * @param int    $port
      */
-    public function __construct(int $port = self::DEFAULT_PORT, string $address = self::DEFAULT_ADDRESS)
+    public function __construct(
+        int $port = self::DEFAULT_PORT,
+        string $address = self::DEFAULT_ADDRESS,
+        int $mode = SWOOLE_BASE
+    ) {
+        $this->address = $address;
+        $this->port = $port;
+        $this->mode = $mode;
+    }
+
+    public function setMode(int $mode): void
     {
-        $this->settings['address'] = $address;
-        $this->settings['port'] = $port;
+        if (in_array($mode, [SWOOLE_PROCESS, SWOOLE_BASE])) {
+            $this->mode = $mode;
+        } else {
+            throw new InvalidArgumentException('Invalid value of running mode of the server');
+        }
+    }
+
+    public function getMode(): int
+    {
+        return $this->mode;
     }
 
     public function getPort(): int
     {
-        return $this->settings['port'];
+        return $this->port;
     }
 
     public function getAddress(): string
     {
-        return $this->settings['address'];
+        return $this->address;
+    }
+
+    public function getSettings(): array
+    {
+        return $this->settings;
+    }
+
+    public function setSettings(array $settings): void
+    {
+        $this->settings = $settings;
     }
 
     /**
@@ -102,7 +137,7 @@ class Configuration
 
         $this->settings += [
             'ssl_cert_file' => $certFile,
-            'ssl_key_file' => $keyFile,
+            'ssl_key_file'  => $keyFile,
         ];
     }
 
@@ -113,7 +148,11 @@ class Configuration
      */
     public function setResponseCompression(int $level = 0): void
     {
-        $this->settings['compression_level'] = $level;
+        if ($level < 0 or $level > 9) {
+            throw new InvalidArgumentException('Invalid value of compression level');
+        }
+
+        $this->compression_level = $level;
     }
 
     /**
@@ -191,10 +230,8 @@ class Configuration
             throw ConfigurationException::forUnavailablePidFile($pidFile);
         }
 
-        $this->settings += [
-            'daemonize' => true,
-            'pid_file' => $pidFile,
-        ];
+        $this->settings['daemonize'] = true;
+        $this->settings['pid_file'] = $pidFile;
     }
 
     /**
@@ -209,6 +246,7 @@ class Configuration
 
     /**
      * Sets the group of worker and task worker process.
+     *
      * @param string $group
      */
     public function setOwnerGroup(string $group): void
@@ -218,6 +256,7 @@ class Configuration
 
     /**
      * Redirect the root path of worker process.
+     *
      * @param string $dir
      */
     public function setChroot(string $dir): void
@@ -238,15 +277,5 @@ class Configuration
     public function setBufferOutputSize(int $size = 2 * 1024 * 1024): void
     {
         $this->settings['buffer_output_size'] = $size;
-    }
-
-    /**
-     * Returns swoole compatible settings array.
-     *
-     * @return array
-     */
-    public function toArray(): array
-    {
-        return $this->settings;
     }
 }

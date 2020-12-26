@@ -166,9 +166,15 @@ class Server implements HandlerFactory
         if ($configuration->isSslEnabled()) {
             $flags |= SWOOLE_SSL;
         }
-        $settings = $configuration->toArray();
-        $handler = new SwooleServer($settings['address'], $settings['port'], SWOOLE_PROCESS, $flags);
-        $handler->set($settings);
+
+        $handler = new SwooleServer(
+            $configuration->getAddress(),
+            $configuration->getPort(),
+            $configuration->getMode(),
+            $flags
+        );
+
+        $handler->set($configuration->getSettings());
 
         return $handler;
     }

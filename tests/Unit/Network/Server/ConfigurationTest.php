@@ -11,16 +11,14 @@ final class ConfigurationTest extends TestCase
     public function testCanInstantiate(): void
     {
         $config = new Configuration();
-        self::assertInstanceOf(Configuration::class, $config);
         self::assertSame(
-            [
-                'address' => Configuration::DEFAULT_ADDRESS,
-                'port' => Configuration::DEFAULT_PORT,
-            ],
-            $config->toArray()
+            Configuration::DEFAULT_PORT,
+            $config->getPort()
         );
-        self::assertSame(80, $config->getPort());
-        self::assertSame('0.0.0.0', $config->getAddress());
+        self::assertSame(
+            Configuration::DEFAULT_ADDRESS,
+            $config->getAddress()
+        );
     }
 
     public function testEnableSsl(): void
@@ -56,12 +54,10 @@ final class ConfigurationTest extends TestCase
         self::assertTrue($config->isDaemonEnabled());
         self::assertSame(
             [
-                'address' => Configuration::DEFAULT_ADDRESS,
-                'port' => Configuration::DEFAULT_PORT,
                 'daemonize' => true,
                 'pid_file' => FIXTURES_DIR . '/file.pid',
             ],
-            $config->toArray()
+            $config->getSettings()
         );
     }
 
@@ -71,11 +67,9 @@ final class ConfigurationTest extends TestCase
         $config->setMaxConnections(10);
         self::assertSame(
             [
-                'address' => Configuration::DEFAULT_ADDRESS,
-                'port' => Configuration::DEFAULT_PORT,
                 'max_conn' => 10,
             ],
-            $config->toArray()
+            $config->getSettings()
         );
     }
 
@@ -85,11 +79,9 @@ final class ConfigurationTest extends TestCase
         $config->setWorkers(10);
         self::assertSame(
             [
-                'address' => Configuration::DEFAULT_ADDRESS,
-                'port' => Configuration::DEFAULT_PORT,
                 'worker_num' => 10,
             ],
-            $config->toArray()
+            $config->getSettings()
         );
     }
 
@@ -99,11 +91,9 @@ final class ConfigurationTest extends TestCase
         $config->setMaxRequests(10);
         self::assertSame(
             [
-                'address' => Configuration::DEFAULT_ADDRESS,
-                'port' => Configuration::DEFAULT_PORT,
                 'max_request' => 10,
             ],
-            $config->toArray()
+            $config->getSettings()
         );
     }
 
@@ -113,11 +103,9 @@ final class ConfigurationTest extends TestCase
         $config->setMaximumBacklog(10);
         self::assertSame(
             [
-                'address' => Configuration::DEFAULT_ADDRESS,
-                'port' => Configuration::DEFAULT_PORT,
                 'backlog' => 10,
             ],
-            $config->toArray()
+            $config->getSettings()
         );
     }
 
@@ -127,11 +115,9 @@ final class ConfigurationTest extends TestCase
         $config->setDispatchMode(Configuration::DISPATCH_FIXED_MODE);
         self::assertSame(
             [
-                'address' => Configuration::DEFAULT_ADDRESS,
-                'port' => Configuration::DEFAULT_PORT,
                 'dispatch_mode' => 2,
             ],
-            $config->toArray()
+            $config->getSettings()
         );
     }
 
@@ -141,11 +127,9 @@ final class ConfigurationTest extends TestCase
         $config->setChroot(__DIR__);
         self::assertSame(
             [
-                'address' => Configuration::DEFAULT_ADDRESS,
-                'port' => Configuration::DEFAULT_PORT,
                 'chroot' => __DIR__,
             ],
-            $config->toArray()
+            $config->getSettings()
         );
     }
 
@@ -155,11 +139,9 @@ final class ConfigurationTest extends TestCase
         $config->setOwnerGroup('test');
         self::assertSame(
             [
-                'address' => Configuration::DEFAULT_ADDRESS,
-                'port' => Configuration::DEFAULT_PORT,
                 'group' => 'test',
             ],
-            $config->toArray()
+            $config->getSettings()
         );
     }
 
@@ -169,11 +151,9 @@ final class ConfigurationTest extends TestCase
         $config->setUploadDir(__DIR__);
         self::assertSame(
             [
-                'address' => Configuration::DEFAULT_ADDRESS,
-                'port' => Configuration::DEFAULT_PORT,
                 'upload_tmp_dir' => __DIR__,
             ],
-            $config->toArray()
+            $config->getSettings()
         );
     }
 
@@ -183,11 +163,9 @@ final class ConfigurationTest extends TestCase
         $config->setBufferOutputSize(10);
         self::assertSame(
             [
-                'address' => Configuration::DEFAULT_ADDRESS,
-                'port' => Configuration::DEFAULT_PORT,
                 'buffer_output_size' => 10,
             ],
-            $config->toArray()
+            $config->getSettings()
         );
     }
 }
