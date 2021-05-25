@@ -9,17 +9,11 @@ namespace Igni\Network\Http;
  */
 class Route
 {
-    /** @var string */
-    private $name;
-
-    /** @var array */
-    private $attributes = [];
-
-    /** @var array */
-    private $methods = [];
-
-    /** @var string */
-    private $path;
+    private string $name;
+    private array $attributes = [];
+    /** @var array|string[] */
+    private array $methods = [];
+    private string $path;
 
     /** @var mixed */
     private $controller;

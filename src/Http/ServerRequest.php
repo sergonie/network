@@ -1,7 +1,9 @@
-<?php declare(strict_types=1);
+<?php
+declare(strict_types=1);
 
 namespace Igni\Network\Http;
 
+use InvalidArgumentException;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\StreamInterface;
 use Psr\Http\Message\UploadedFileInterface;
@@ -13,46 +15,29 @@ use function Laminas\Diactoros\normalizeUploadedFiles;
 
 class ServerRequest extends Request implements ServerRequestInterface
 {
-    /**
-     * @var array
-     */
-    private $attributes = [];
-
-    /**
-     * @var array
-     */
-    private $cookieParams = [];
+    private array $attributes = [];
+    private array $cookieParams = [];
 
     /**
      * @var null|array|object
      */
     private $parsedBody;
-
-    /**
-     * @var array
-     */
-    private $queryParams = [];
-
-    /**
-     * @var array
-     */
-    private $serverParams;
-
-    /**
-     * @var array
-     */
-    private $uploadedFiles;
+    private array $queryParams = [];
+    private array $serverParams;
+    private array $uploadedFiles;
 
 
     /**
      * Server request constructor.
      *
-     * @param array $serverParams Server parameters, typically from $_SERVER
-     * @param array $uploadedFiles Upload file information, a tree of UploadedFiles
-     * @param null|string $uri URI for the request, if any.
-     * @param null|string $method HTTP method for the request, if any.
-     * @param string|resource|StreamInterface $body Messages body, if any.
-     * @param array $headers Headers for the message, if any.
+     * @param  array  $serverParams  Server parameters, typically from $_SERVER
+     * @param  array  $uploadedFiles  Upload file information, a tree of
+     *     UploadedFiles
+     * @param  null|string  $uri  URI for the request, if any.
+     * @param  null|string  $method  HTTP method for the request, if any.
+     * @param  string|resource|StreamInterface  $body  Messages body, if any.
+     * @param  array  $headers  Headers for the message, if any.
+     *
      * @throws \InvalidArgumentException for any invalid value.
      */
     public function __construct(
@@ -65,7 +50,7 @@ class ServerRequest extends Request implements ServerRequestInterface
     ) {
         parent::__construct($uri, $method, $body, $headers);
         $this->validateUploadedFiles($uploadedFiles);
-        $this->serverParams  = $serverParams;
+        $this->serverParams = $serverParams;
         $this->uploadedFiles = $uploadedFiles;
         parse_str($this->getUri()->getQuery(), $this->queryParams);
         $this->parseBody();
@@ -74,19 +59,21 @@ class ServerRequest extends Request implements ServerRequestInterface
     private function parseBody(): void
     {
         $contentType = $this->getHeader('Content-Type')[0] ?? '';
-
         $body = (string) $this->getBody();
 
         switch (strtolower($contentType)) {
             case 'application/json':
                 $this->parsedBody = json_decode($body, true);
                 return;
+
             case 'application/x-www-form-urlencoded':
-                 parse_str($body, $this->parsedBody);
-                 return;
+                parse_str($body, $this->parsedBody);
+                return;
+
             case 'application/xml':
                 $this->parsedBody = simplexml_load_string($body);
                 return;
+
             case 'text/csv':
                 $this->parsedBody = str_getcsv($body);
                 return;
@@ -187,36 +174,34 @@ class ServerRequest extends Request implements ServerRequestInterface
     /**
      * {@inheritdoc}
      */
-    public function getAttribute($attribute, $default = null)
+    public function getAttribute($name, $default = null)
     {
-        if (! isset($this->attributes[$attribute])) {
-            return $default;
-        }
-
-        return $this->attributes[$attribute];
+        return $this->attributes[$name] ?? $default;
     }
 
     /**
      * {@inheritdoc}
      */
-    public function withAttribute($attribute, $value)
+    public function withAttribute($name, $value)
     {
         $new = clone $this;
-        $new->attributes[$attribute] = $value;
+        $new->attributes[$name] = $value;
+
         return $new;
     }
 
     /**
      * {@inheritdoc}
      */
-    public function withoutAttribute($attribute)
+    public function withoutAttribute($name)
     {
-        if (!isset($this->attributes[$attribute])) {
+        if (!isset($this->attributes[$name])) {
             return clone $this;
         }
 
         $new = clone $this;
-        unset($new->attributes[$attribute]);
+        unset($new->attributes[$name]);
+        
         return $new;
     }
 
@@ -225,7 +210,8 @@ class ServerRequest extends Request implements ServerRequestInterface
      *
      * This method returns a new instance.
      *
-     * @param array $attributes
+     * @param  array  $attributes
+     *
      * @return self
      */
     public function withAttributes(array $attributes): ServerRequest
@@ -238,8 +224,10 @@ class ServerRequest extends Request implements ServerRequestInterface
     /**
      * Recursively validate the structure in an uploaded files array.
      *
-     * @param array $uploadedFiles
-     * @throws \InvalidArgumentException if any leaf is not an UploadedFileInterface instance.
+     * @param  array  $uploadedFiles
+     *
+     * @throws \InvalidArgumentException if any leaf is not an
+     *     UploadedFileInterface instance.
      */
     private function validateUploadedFiles(array $uploadedFiles): void
     {
@@ -249,15 +237,15 @@ class ServerRequest extends Request implements ServerRequestInterface
                 continue;
             }
 
-            if (! $file instanceof UploadedFileInterface) {
-                throw new \InvalidArgumentException('Invalid leaf in uploaded files structure');
+            if (!$file instanceof UploadedFileInterface) {
+                throw new InvalidArgumentException('Invalid leaf in uploaded files structure');
             }
         }
     }
 
     public static function fromGlobals(): ServerRequest
     {
-        $instance = new self(
+        return new self(
             $_SERVER['REQUEST_URI'] ?? '',
             $_SERVER['REQUEST_METHOD'] ?? 'GET',
             'php://input',
@@ -265,22 +253,22 @@ class ServerRequest extends Request implements ServerRequestInterface
             normalizeUploadedFiles($_FILES),
             $_SERVER
         );
-
-        return $instance;
     }
 
     /**
-     * @param SwooleHttRequest $request
+     * @param  SwooleHttRequest  $request
+     *
      * @return ServerRequest
      */
     public static function fromSwoole(SwooleHttRequest $request): ServerRequest
     {
-        $serverParams  = $request->server ?? [];
+        $serverParams = $request->server ?? [];
 
         $uri = '';
         if (isset($request->server['request_uri'])) {
-            $uri = $request->server['request_uri'] .
-                (isset($request->server['query_string']) ? '?' . $request->server['query_string'] : '');
+            $uri = $request->server['request_uri'].
+                (isset($request->server['query_string']) ? '?'
+                    .$request->server['query_string'] : '');
         }
 
         // Normalize server params
@@ -293,7 +281,8 @@ class ServerRequest extends Request implements ServerRequestInterface
                 if (!isset($headers[$name])) {
                     $headers[$name] = [];
                 }
-                array_push($headers[$name], $value);
+
+                $headers[$name][] = $value;
             }
         }
 

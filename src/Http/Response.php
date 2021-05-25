@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Igni\Network\Http;
 
@@ -92,96 +94,91 @@ class Response implements ResponseInterface
     /**
      * Map of standard HTTP status code/reason phrases
      *
-     * @var array
+     * @var string[]
      */
-    private static $phrases = [
-        // INFORMATIONAL CODES
-        100 => 'Continue',
-        101 => 'Switching Protocols',
-        102 => 'Processing',
-        // SUCCESS CODES
-        200 => 'OK',
-        201 => 'Created',
-        202 => 'Accepted',
-        203 => 'Non-Authoritative Information',
-        204 => 'No Content',
-        205 => 'Reset Content',
-        206 => 'Partial Content',
-        207 => 'Multi-status',
-        208 => 'Already Reported',
-        // REDIRECTION CODES
-        300 => 'Multiple Choices',
-        301 => 'Moved Permanently',
-        302 => 'Found',
-        303 => 'See Other',
-        304 => 'Not Modified',
-        305 => 'Use Proxy',
-        306 => 'Switch Proxy', // Deprecated
-        307 => 'Temporary Redirect',
-        // CLIENT ERROR
-        400 => 'Bad Request',
-        401 => 'Unauthorized',
-        402 => 'Payment Required',
-        403 => 'Forbidden',
-        404 => 'Not Found',
-        405 => 'Method Not Allowed',
-        406 => 'Not Acceptable',
-        407 => 'Proxy Authentication Required',
-        408 => 'Request Time-out',
-        409 => 'Conflict',
-        410 => 'Gone',
-        411 => 'Length Required',
-        412 => 'Precondition Failed',
-        413 => 'Request Entity Too Large',
-        414 => 'Request-URI Too Large',
-        415 => 'Unsupported Media Property',
-        416 => 'Requested range not satisfiable',
-        417 => 'Expectation Failed',
-        418 => 'I\'m a teapot',
-        422 => 'Unprocessable Entity',
-        423 => 'Locked',
-        424 => 'Failed Dependency',
-        425 => 'Unordered Collection',
-        426 => 'Upgrade Required',
-        428 => 'Precondition Required',
-        429 => 'Too Many Requests',
-        431 => 'Request Header Fields Too Large',
-        // SERVER ERROR
-        500 => 'Internal Server Error',
-        501 => 'Not Implemented',
-        502 => 'Bad Gateway',
-        503 => 'Service Unavailable',
-        504 => 'Gateway Time-out',
-        505 => 'HTTP Version not supported',
-        506 => 'Variant Also Negotiates',
-        507 => 'Insufficient Storage',
-        508 => 'Loop Detected',
-        511 => 'Network Authentication Required',
-    ];
+    private static $phrases
+        = [
+            // INFORMATIONAL CODES
+            100 => 'Continue',
+            101 => 'Switching Protocols',
+            102 => 'Processing',
+            // SUCCESS CODES
+            200 => 'OK',
+            201 => 'Created',
+            202 => 'Accepted',
+            203 => 'Non-Authoritative Information',
+            204 => 'No Content',
+            205 => 'Reset Content',
+            206 => 'Partial Content',
+            207 => 'Multi-status',
+            208 => 'Already Reported',
+            // REDIRECTION CODES
+            300 => 'Multiple Choices',
+            301 => 'Moved Permanently',
+            302 => 'Found',
+            303 => 'See Other',
+            304 => 'Not Modified',
+            305 => 'Use Proxy',
+            306 => 'Switch Proxy', // Deprecated
+            307 => 'Temporary Redirect',
+            // CLIENT ERROR
+            400 => 'Bad Request',
+            401 => 'Unauthorized',
+            402 => 'Payment Required',
+            403 => 'Forbidden',
+            404 => 'Not Found',
+            405 => 'Method Not Allowed',
+            406 => 'Not Acceptable',
+            407 => 'Proxy Authentication Required',
+            408 => 'Request Time-out',
+            409 => 'Conflict',
+            410 => 'Gone',
+            411 => 'Length Required',
+            412 => 'Precondition Failed',
+            413 => 'Request Entity Too Large',
+            414 => 'Request-URI Too Large',
+            415 => 'Unsupported Media Property',
+            416 => 'Requested range not satisfiable',
+            417 => 'Expectation Failed',
+            418 => 'I\'m a teapot',
+            422 => 'Unprocessable Entity',
+            423 => 'Locked',
+            424 => 'Failed Dependency',
+            425 => 'Unordered Collection',
+            426 => 'Upgrade Required',
+            428 => 'Precondition Required',
+            429 => 'Too Many Requests',
+            431 => 'Request Header Fields Too Large',
+            // SERVER ERROR
+            500 => 'Internal Server Error',
+            501 => 'Not Implemented',
+            502 => 'Bad Gateway',
+            503 => 'Service Unavailable',
+            504 => 'Gateway Time-out',
+            505 => 'HTTP Version not supported',
+            506 => 'Variant Also Negotiates',
+            507 => 'Insufficient Storage',
+            508 => 'Loop Detected',
+            511 => 'Network Authentication Required',
+        ];
+
+    private string $reasonPhrase = '';
+    private int $statusCode;
+    private bool $complete = false;
 
     /**
-     * @var string
-     */
-    private $reasonPhrase = '';
-
-    /**
-     * @var int
-     */
-    private $statusCode;
-
-    /**
-     * @var bool
-     */
-    private $complete = false;
-
-    /**
-     * @param string|resource|StreamInterface $body Stream identifier and/or actual stream resource
-     * @param int $status Status code for the response, if any.
-     * @param array $headers Headers for the response, if any.
+     * @param  string|resource|StreamInterface  $body  Stream identifier and/or
+     *     actual stream resource
+     * @param  int  $status  Status code for the response, if any.
+     * @param  array  $headers  Headers for the response, if any.
+     *
      * @throws \InvalidArgumentException on any invalid element.
      */
-    public function __construct($body = '', int $status = self::HTTP_OK, array $headers = [])
-    {
+    public function __construct(
+        $body = '',
+        int $status = self::HTTP_OK,
+        array $headers = []
+    ) {
         $this->stream = Stream::create($body, 'wb+');
         $this->statusCode = $status;
         $this->reasonPhrase = self::$phrases[$this->statusCode];
@@ -191,16 +188,18 @@ class Response implements ResponseInterface
     /**
      * Writes content to the response body
      *
-     * @param string $body
+     * @param  string  $body
+     *
      * @return $this
      */
-    public function write(string $body)
+    public function write(string $body): self
     {
         if ($this->complete) {
             throw new RuntimeException('Cannot write to the response, response is already completed.');
         }
 
         $this->getBody()->write($body);
+
         return $this;
     }
 
@@ -259,34 +258,44 @@ class Response implements ResponseInterface
     /**
      * Factories response instance from json data.
      *
-     * @param array|\JsonSerializable $data
-     * @param int $status
-     * @param array $headers
+     * @param  array|\JsonSerializable  $data
+     * @param  int  $status
+     * @param  array  $headers
+     *
      * @return Response
      * @throws InvalidArgumentException
      */
-    public static function asJson($data, int $status = self::HTTP_OK, array $headers = [])
-    {
-        if (! $data instanceof JsonSerializable && !is_array($data)) {
+    public static function asJson(
+        $data,
+        int $status = self::HTTP_OK,
+        array $headers = []
+    ): self {
+        if (!$data instanceof JsonSerializable && !is_array($data)) {
             throw new InvalidArgumentException('Invalid $data provided, method expects array or instance of \JsonSerializable.');
         }
 
         $headers['Content-Type'] = 'application/json';
 
-        $body = json_encode($data, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_UNESCAPED_SLASHES);
+        $body = json_encode($data, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT
+            | JSON_UNESCAPED_SLASHES);
+
         return new Response($body, $status, $headers);
     }
 
     /**
      * Factories response instance from text.
      *
-     * @param string $text
-     * @param int $status
-     * @param array $headers
+     * @param  string  $text
+     * @param  int  $status
+     * @param  array  $headers
+     *
      * @return Response
      */
-    public static function asText(string $text, int $status = self::HTTP_OK, array $headers = []): Response
-    {
+    public static function asText(
+        string $text,
+        int $status = self::HTTP_OK,
+        array $headers = []
+    ): self {
         $headers['Content-Type'] = 'text/plain';
         return new Response($text, $status, $headers);
     }
@@ -294,13 +303,17 @@ class Response implements ResponseInterface
     /**
      * Factories response from html text.
      *
-     * @param string $html
-     * @param int $status
-     * @param array $headers
+     * @param  string  $html
+     * @param  int  $status
+     * @param  array  $headers
+     *
      * @return Response
      */
-    public static function asHtml(string $html, int $status = self::HTTP_OK, array $headers = [])
-    {
+    public static function asHtml(
+        string $html,
+        int $status = self::HTTP_OK,
+        array $headers = []
+    ) {
         $headers['Content-Type'] = 'text/html';
         return new Response($html, $status, $headers);
     }
@@ -308,14 +321,18 @@ class Response implements ResponseInterface
     /**
      * Factories xml response.
      *
-     * @param SimpleXMLElement|DOMDocument|string $data
-     * @param int $status
-     * @param array $headers
+     * @param  SimpleXMLElement|DOMDocument|string  $data
+     * @param  int  $status
+     * @param  array  $headers
+     *
      * @return Response
      * @throws InvalidArgumentException
      */
-    public static function asXml($data, int $status = self::HTTP_OK, array $headers = [])
-    {
+    public static function asXml(
+        $data,
+        int $status = self::HTTP_OK,
+        array $headers = []
+    ): self {
         if ($data instanceof SimpleXMLElement) {
             $body = $data->asXML();
         } elseif ($data instanceof DOMDocument) {
@@ -327,19 +344,24 @@ class Response implements ResponseInterface
         }
 
         $headers['Content-Type'] = 'text/xml';
+
         return new Response($body, $status, $headers);
     }
 
     /**
      * Factories empty response.
      *
-     * @param int $status
-     * @param array $headers
+     * @param  int  $status
+     * @param  array  $headers
+     *
      * @return Response
      */
-    public static function empty(int $status = self::HTTP_OK, array $headers = [])
-    {
+    public static function empty(
+        int $status = self::HTTP_OK,
+        array $headers = []
+    ): self {
         $headers['Content-Type'] = 'text/plain';
+
         return new Response('', $status, $headers);
     }
 }

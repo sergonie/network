@@ -11,6 +11,8 @@ use Swoole\Http\Request as SwooleHttpRequest;
 use Swoole\Http\Response as SwooleHttpResponse;
 use Swoole\Http\Server as SwooleHttpServer;
 
+use Throwable;
+
 use function explode;
 use function gzdeflate;
 use function implode;
@@ -29,7 +31,7 @@ class HttpServer extends Server implements HandlerFactory
         parent::__construct($settings, $logger, $handlerFactory ?? $this);
     }
 
-    public function createHandler(Configuration $configuration)
+    public function createHandler(Configuration $configuration): \Swoole\Server
     {
         $flags = SWOOLE_TCP;
         if ($configuration->isSslEnabled()) {
@@ -77,7 +79,7 @@ class HttpServer extends Server implements HandlerFactory
                 }
             } catch (HttpException $exception) {
                 $psrResponse = $exception->toResponse();
-            } catch (\Throwable $throwable) {
+            } catch (Throwable $throwable) {
                 $this->logger->error($throwable->getMessage());
                 $psrResponse = Response::empty(Response::HTTP_INTERNAL_SERVER_ERROR);
             }

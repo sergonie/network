@@ -62,8 +62,9 @@ class Configuration
     /**
      * HttpConfiguration constructor.
      *
-     * @param string $address
-     * @param int    $port
+     * @param  int  $port
+     * @param  string  $address
+     * @param  int  $mode
      */
     public function __construct(
         int $port = self::DEFAULT_PORT,
@@ -77,7 +78,7 @@ class Configuration
 
     public function setMode(int $mode): void
     {
-        if (in_array($mode, [SWOOLE_PROCESS, SWOOLE_BASE])) {
+        if (in_array($mode, [SWOOLE_PROCESS, SWOOLE_BASE], true)) {
             $this->mode = $mode;
         } else {
             throw new InvalidArgumentException('Invalid value of running mode of the server');

@@ -52,7 +52,7 @@ XML;
     public function testCreateJsonFail(): void
     {
         $this->expectException(InvalidArgumentException::class);
-        $json = Response::asJson(new \stdClass());
+        Response::asJson(new \stdClass());
     }
 
     public function testCreateEmpty(): void

@@ -13,7 +13,6 @@ use Mockery;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
-use stdClass;
 
 final class ServerTest extends TestCase
 {
@@ -68,13 +67,15 @@ final class ServerTest extends TestCase
 
     public function testClientCreation(): void
     {
+        $swoole = Mockery::mock(\Swoole\Server::class);
+
         $server = $this->mockServer($listeners);
         $server->start();
 
-        $listeners['Connect'](null, 1);
+        $listeners['Connect']($swoole, 1);
         $client = $server->getClient(1);
         self::assertInstanceOf(Client::class, $client);
-        $listeners['Close'](null, 1);
+        $listeners['Close']($swoole, 1);
 
         $this->expectException(ClientException::class);
         $server->getClient(1);
@@ -116,8 +117,9 @@ final class ServerTest extends TestCase
         $server->addListener($onReceive);
         $server->start();
 
-        $listeners['Connect'](null, 1);
-        $listeners['Receive'](null, 1, 0, 'Test');
+        $swoole = Mockery::mock(\Swoole\Server::class);
+        $listeners['Connect']($swoole, 1);
+        $listeners['Receive']($swoole, 1, 0, 'Test');
     }
 
     public function testOnConnectListener(): void
@@ -134,7 +136,8 @@ final class ServerTest extends TestCase
         $server->addListener($onConnect);
         $server->start();
 
-        $listeners['Connect'](null, 1);
+        $swoole = Mockery::mock(\Swoole\Server::class);
+        $listeners['Connect']($swoole, 1);
     }
 
     public function testOnShutdownListener(): void
@@ -167,8 +170,9 @@ final class ServerTest extends TestCase
         $server->addListener($onClose);
         $server->start();
 
-        $listeners['Connect'](null, 1);
-        $listeners['Close'](null, 1);
+        $swoole = Mockery::mock(\Swoole\Server::class);
+        $listeners['Connect']($swoole, 1);
+        $listeners['Close']($swoole, 1);
     }
 
     public function testAddingListeners(): void
@@ -206,7 +210,7 @@ final class ServerTest extends TestCase
         $settings->enableSsl(FIXTURES_DIR . '/bob.crt', FIXTURES_DIR . '/bob.key');
         $handlerFactoryMock = Mockery::mock(HandlerFactory::class);
 
-        $handlerMock = Mockery::mock(stdClass::class);
+        $handlerMock = Mockery::mock(\Swoole\Server::class);
         $handlerMock->shouldReceive('start');
         $handlerMock->shouldReceive('set')
             ->withArgs(function (array $config) {
@@ -233,7 +237,7 @@ final class ServerTest extends TestCase
 
     private function mockHandlerFactory(Configuration $configuration, &$listeners = []): HandlerFactory
     {
-        $handler = Mockery::mock(\stdClass::class);
+        $handler = Mockery::mock(\Swoole\Server::class);
         $handler->shouldReceive('on')
             ->withArgs(function(string $type, Closure $listener) use(&$listeners) {
                 $listeners[$type] = $listener;

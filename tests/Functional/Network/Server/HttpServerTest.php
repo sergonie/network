@@ -15,9 +15,9 @@ use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Log\NullLogger;
-use stdClass;
 use Swoole\Http\Request as SwooleHttpRequest;
 use Swoole\Http\Response as SwooleHttpResponse;
+use Swoole\Server;
 
 final class HttpServerTest extends TestCase
 {
@@ -53,9 +53,11 @@ final class HttpServerTest extends TestCase
         $swooleResponse->shouldReceive('end')
             ->withArgs(['Test 1']);
 
-        $listeners['Connect']($server, 1);
+        $swoole = Mockery::mock(Server::class);
+
+        $listeners['Connect']($swoole, 1);
         $listeners['Request']($swooleRequest, $swooleResponse);
-        $listeners['Close']($server, 1);
+        $listeners['Close']($swoole, 1);
     }
 
     public function testGzipSupport(): void
@@ -103,14 +105,16 @@ final class HttpServerTest extends TestCase
                 return true;
             });
 
-        $listeners['Connect']($server, 1);
+        $swoole = Mockery::mock(Server::class);
+
+        $listeners['Connect']($swoole, 1);
         $listeners['Request']($swooleRequestMock, $swooleResponseMock);
-        $listeners['Close']($server, 1);
+        $listeners['Close']($swoole, 1);
     }
 
     private function mockHandlerFactory(Configuration $configuration, &$listeners = []): HandlerFactory
     {
-        $handler = Mockery::mock(stdClass::class);
+        $handler = Mockery::mock(Server::class);
         $handler->shouldReceive('on')
             ->withArgs(function(string $type, Closure $listener) use(&$listeners) {
                 $listeners[$type] = $listener;

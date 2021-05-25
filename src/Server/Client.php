@@ -7,21 +7,10 @@ use Swoole\Server as SwooleServer;
 
 class Client
 {
-    /**
-     * @var int
-     */
-    private $id;
+    private int $id;
+    private SwooleServer $handler;
 
-    /**
-     * @var SwooleServer
-     */
-    private $handler;
-
-    /**
-     * @param SwooleServer $handler
-     * @param int $id
-     */
-    public function __construct($handler, int $id)
+    public function __construct(SwooleServer $handler, int $id)
     {
         $this->handler = $handler;
         $this->id = $id;
@@ -53,8 +42,7 @@ class Client
     }
 
     /**
-     * @param string $data
-     * @throws ClientException
+     * @param  string|null  $data
      */
     public function send(string $data = null): void
     {

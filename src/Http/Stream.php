@@ -33,7 +33,10 @@ class Stream extends BaseStream
         return new self($path, $mode);
     }
 
-    public static function create($stream, string $mode = 'r'): self
+    /**
+     * @param string|resource|StreamInterface $stream
+     */
+    public static function create($stream, string $mode = 'r'): StreamInterface
     {
         if (!is_string($stream) && !is_resource($stream) && !$stream instanceof StreamInterface) {
             throw new InvalidArgumentException(

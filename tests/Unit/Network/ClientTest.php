@@ -7,18 +7,21 @@ use Igni\Network\Server\Client;
 use Igni\Network\Server\ClientInfo;
 use Mockery;
 use PHPUnit\Framework\TestCase;
-use stdClass;
+use Swoole\Server;
 
 final class ClientTest extends TestCase
 {
     public function testCanInstantiate(): void
     {
-        self::assertInstanceOf(Client::class, new Client(null, 1));
+        self::assertInstanceOf(
+            Client::class,
+            new Client(Mockery::mock(Server::class), 1)
+        );
     }
 
     public function testGetInfo(): void
     {
-        $handlerMock = Mockery::mock(stdClass::class);
+        $handlerMock = Mockery::mock(Server::class);
         $handlerMock->shouldReceive('getClientInfo')
             ->andReturn([
                 'remote_port' => 80,
@@ -33,7 +36,7 @@ final class ClientTest extends TestCase
 
     public function testIsActive(): void
     {
-        $handlerMock = Mockery::mock(stdClass::class);
+        $handlerMock = Mockery::mock(Server::class);
         $handlerMock->shouldReceive('exist')
             ->withArgs([1])
             ->andReturn(true);
@@ -44,7 +47,7 @@ final class ClientTest extends TestCase
 
     public function testPause(): void
     {
-        $handlerMock = Mockery::mock(stdClass::class);
+        $handlerMock = Mockery::mock(Server::class);
         $handlerMock->shouldReceive('pause')
             ->withArgs([1]);
         $client = new Client($handlerMock, 1);
@@ -54,7 +57,7 @@ final class ClientTest extends TestCase
 
     public function testResume(): void
     {
-        $handlerMock = Mockery::mock(stdClass::class);
+        $handlerMock = Mockery::mock(Server::class);
         $handlerMock->shouldReceive('resume')
             ->withArgs([1]);
         $client = new Client($handlerMock, 1);
@@ -64,7 +67,7 @@ final class ClientTest extends TestCase
 
     public function testProtect(): void
     {
-        $handlerMock = Mockery::mock(stdClass::class);
+        $handlerMock = Mockery::mock(Server::class);
         $handlerMock->shouldReceive('protect')
             ->withArgs([1]);
         $client = new Client($handlerMock, 1);
@@ -74,7 +77,7 @@ final class ClientTest extends TestCase
 
     public function testConfirm(): void
     {
-        $handlerMock = Mockery::mock(stdClass::class);
+        $handlerMock = Mockery::mock(Server::class);
         $handlerMock->shouldReceive('confirm')
             ->withArgs([1]);
         $client = new Client($handlerMock, 1);
@@ -84,7 +87,7 @@ final class ClientTest extends TestCase
 
     public function testClose(): void
     {
-        $handlerMock = Mockery::mock(stdClass::class);
+        $handlerMock = Mockery::mock(Server::class);
         $handlerMock->shouldReceive('close')
             ->withArgs([1]);
         $client = new Client($handlerMock, 1);
@@ -94,7 +97,7 @@ final class ClientTest extends TestCase
 
     public function testSendSuccess(): void
     {
-        $handlerMock = Mockery::mock(stdClass::class);
+        $handlerMock = Mockery::mock(Server::class);
         $handlerMock->shouldReceive('send')
             ->withArgs([1, 'test'])
             ->andReturn(true);
@@ -105,7 +108,7 @@ final class ClientTest extends TestCase
 
     public function testSendFailure(): void
     {
-        $handlerMock = Mockery::mock(stdClass::class);
+        $handlerMock = Mockery::mock(Server::class);
         $handlerMock->shouldReceive('send')
             ->withArgs([1, 'test'])
             ->andReturn(false);

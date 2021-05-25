@@ -1,4 +1,5 @@
-<?php declare(strict_types=1);
+<?php
+declare(strict_types=1);
 
 namespace Igni\Network;
 
@@ -31,40 +32,18 @@ class Server implements HandlerFactory
 {
     private const SWOOLE_EXT_NAME = 'swoole';
 
-    /**
-     * @var SwooleServer|null
-     */
-    protected $handler;
+    protected ?SwooleServer $handler = null;
+    protected Configuration $configuration;
+    protected LoggerInterface $logger;
+    protected HandlerFactory $handlerFactory;
 
-    /**
-     * @var Configuration
-     */
-    protected $configuration;
+    /* @var SplQueue[] */
+    protected array $listeners = [];
 
-    /**
-     * @var SplQueue[]
-     */
-    protected $listeners = [];
+    /** @var Client[] */
+    private array $clients = [];
 
-    /**
-     * @var LoggerInterface
-     */
-    protected $logger;
-
-    /**
-     * @var HandlerFactory
-     */
-    protected $handlerFactory;
-
-    /**
-     * @var Client[]
-     */
-    private $clients = [];
-
-    /**
-     * @var bool
-     */
-    private $running = false;
+    private bool $running = false;
 
     public function __construct(
         Configuration $settings = null,
@@ -91,7 +70,8 @@ class Server implements HandlerFactory
     }
 
     /**
-     * @param int $id
+     * @param  int  $id
+     *
      * @return Client
      * @throws ClientException if client was not found
      */
@@ -106,7 +86,7 @@ class Server implements HandlerFactory
     /**
      * Adds listener that is attached to server once it is run.
      *
-     * @param Listener $listener
+     * @param  Listener  $listener
      */
     public function addListener(Listener $listener): void
     {
@@ -130,12 +110,12 @@ class Server implements HandlerFactory
     /**
      * Checks if listener exists.
      *
-     * @param Listener $listener
+     * @param  Listener  $listener
+     *
      * @return bool
      */
     public function hasListener(Listener $listener): bool
     {
-        /** @var SplQueue $listenerCollection */
         foreach ($this->listeners as $listenerCollection) {
             foreach ($listenerCollection as $current) {
                 if ($current === $listener) {
@@ -160,7 +140,7 @@ class Server implements HandlerFactory
         return new ServerStats($this->handler->stats());
     }
 
-    public function createHandler(Configuration $configuration)
+    public function createHandler(Configuration $configuration): SwooleServer
     {
         $flags = SWOOLE_TCP;
         if ($configuration->isSslEnabled()) {
@@ -182,7 +162,8 @@ class Server implements HandlerFactory
     public function start(): void
     {
         $this->addListener($this->logger);
-        $this->handler = $this->handlerFactory->createHandler($this->configuration);
+        $this->handler
+            = $this->handlerFactory->createHandler($this->configuration);
         $this->createListeners();
         $this->handler->start();
         $this->running = true;
@@ -227,7 +208,7 @@ class Server implements HandlerFactory
 
     protected function createOnConnectListener(): void
     {
-        $this->handler->on('Connect', function($handler, int $clientId) {
+        $this->handler->on('Connect', function ($handler, int $clientId) {
             $this->createClient($handler, $clientId);
 
             if (!isset($this->listeners[OnConnectListener::class])) {
@@ -244,9 +225,8 @@ class Server implements HandlerFactory
 
     protected function createOnCloseListener(): void
     {
-        $this->handler->on('Close', function($handler, int $clientId) {
+        $this->handler->on('Close', function ($handler, int $clientId) {
             if (isset($this->listeners[OnCloseListener::class])) {
-
                 $queue = clone $this->listeners[OnCloseListener::class];
                 /** @var OnCloseListener $listener */
                 while (!$queue->isEmpty() && $listener = $queue->pop()) {
@@ -260,7 +240,7 @@ class Server implements HandlerFactory
 
     protected function createOnShutdownListener(): void
     {
-        $this->handler->on('Shutdown', function() {
+        $this->handler->on('Shutdown', function () {
             if (!isset($this->listeners[OnShutdownListener::class])) {
                 return;
             }
@@ -277,7 +257,7 @@ class Server implements HandlerFactory
 
     protected function createOnStartListener(): void
     {
-        $this->handler->on('Start', function() {
+        $this->handler->on('Start', function () {
             if (!isset($this->listeners[OnStartListener::class])) {
                 return;
             }
@@ -292,17 +272,19 @@ class Server implements HandlerFactory
 
     protected function createOnReceiveListener(): void
     {
-        $this->handler->on('Receive', function ($handler, int $clientId, int $fromId, string $data) {
-            if (!isset($this->listeners[OnReceiveListener::class])) {
-                return;
-            }
+        $this->handler->on('Receive',
+            function ($handler, int $clientId, int $fromId, string $data) {
+                if (!isset($this->listeners[OnReceiveListener::class])) {
+                    return;
+                }
 
-            $queue = clone $this->listeners[OnReceiveListener::class];
+                $queue = clone $this->listeners[OnReceiveListener::class];
 
-            /** @var OnReceiveListener $listener */
-            while (!$queue->isEmpty() && $listener = $queue->pop()) {
-                $listener->onReceive($this, $this->getClient($clientId), $data);
-            }
-        });
+                /** @var OnReceiveListener $listener */
+                while (!$queue->isEmpty() && $listener = $queue->pop()) {
+                    $listener->onReceive($this, $this->getClient($clientId),
+                        $data);
+                }
+            });
     }
 }

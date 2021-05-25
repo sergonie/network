@@ -9,7 +9,7 @@ namespace Igni\Network\Server;
  */
 class ClientInfo
 {
-    private $stats;
+    private array $stats;
 
     /**
      * ClientStats constructor.
