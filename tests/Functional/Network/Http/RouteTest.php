@@ -2,7 +2,7 @@
 
 namespace Igni\Tests\Functional\Network\Http;
 
-use Igni\Network\Http\Route;
+use Sergonie\Network\Http\Route;
 use PHPUnit\Framework\TestCase;
 
 final class RouteTest extends TestCase

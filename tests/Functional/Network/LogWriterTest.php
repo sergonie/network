@@ -2,10 +2,10 @@
 
 namespace Igni\Tests\Functional\Network\Server;
 
-use Igni\Network\Server;
-use Igni\Network\Server\Client;
-use Igni\Network\Server\Logger;
-use Igni\Network\Server\LogWriter;
+use Sergonie\Network\Server;
+use Sergonie\Network\Server\Client;
+use Sergonie\Network\Server\Logger;
+use Sergonie\Network\Server\LogWriter;
 use Mockery;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;

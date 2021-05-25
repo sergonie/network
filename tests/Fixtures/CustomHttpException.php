@@ -2,8 +2,8 @@
 
 namespace Igni\Tests\Fixtures;
 
-use Igni\Network\Exception\HttpException;
-use Igni\Network\Http\Response;
+use Sergonie\Network\Exception\HttpException;
+use Sergonie\Network\Http\Response;
 use Psr\Http\Message\ResponseInterface;
 use RuntimeException;
 use Throwable;

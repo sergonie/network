@@ -3,13 +3,13 @@
 namespace Igni\Tests\Functional\Network\Server;
 
 use Closure;
-use Igni\Network\Http\Response;
-use Igni\Network\Http\Stream;
-use Igni\Network\Server\Client;
-use Igni\Network\Server\Configuration;
-use Igni\Network\Server\HandlerFactory;
-use Igni\Network\Server\HttpServer;
-use Igni\Network\Server\OnRequestListener;
+use Sergonie\Network\Http\Response;
+use Sergonie\Network\Http\Stream;
+use Sergonie\Network\Server\Client;
+use Sergonie\Network\Server\Configuration;
+use Sergonie\Network\Server\HandlerFactory;
+use Sergonie\Network\Server\HttpServer;
+use Sergonie\Network\Server\OnRequestListener;
 use Mockery;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ResponseInterface;

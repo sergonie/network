@@ -3,12 +3,12 @@
 namespace Igni\Tests\Functional\Network;
 
 use Closure;
-use Igni\Network\Exception\ClientException;
-use Igni\Network\Exception\ServerException;
-use Igni\Network\Server;
-use Igni\Network\Server\Client;
-use Igni\Network\Server\Configuration;
-use Igni\Network\Server\HandlerFactory;
+use Sergonie\Network\Exception\ClientException;
+use Sergonie\Network\Exception\ServerException;
+use Sergonie\Network\Server;
+use Sergonie\Network\Server\Client;
+use Sergonie\Network\Server\Configuration;
+use Sergonie\Network\Server\HandlerFactory;
 use Mockery;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;

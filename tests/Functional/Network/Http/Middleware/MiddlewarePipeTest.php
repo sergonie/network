@@ -2,8 +2,8 @@
 
 namespace Igni\Tests\Functional\Network\Http\Middleware;
 
-use Igni\Network\Exception\MiddlewareException;
-use Igni\Network\Http\Middleware\MiddlewarePipe;
+use Sergonie\Network\Exception\MiddlewareException;
+use Sergonie\Network\Http\Middleware\MiddlewarePipe;
 use Mockery;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ResponseInterface;

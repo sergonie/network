@@ -2,7 +2,7 @@
 
 namespace Igni\Tests\Functional\Network\Http\Middleware;
 
-use Igni\Network\Http\Middleware\Next;
+use Sergonie\Network\Http\Middleware\Next;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;

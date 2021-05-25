@@ -1,11 +1,11 @@
 <?php declare(strict_types=1);
 
-namespace Igni\Network\Server;
+namespace Sergonie\Network\Server;
 
-use Igni\Network\Exception\HttpException;
-use Igni\Network\Http\Response;
-use Igni\Network\Http\ServerRequest;
-use Igni\Network\Server;
+use Sergonie\Network\Exception\HttpException;
+use Sergonie\Network\Http\Response;
+use Sergonie\Network\Http\ServerRequest;
+use Sergonie\Network\Server;
 use Psr\Log\LoggerInterface;
 use Swoole\Http\Request as SwooleHttpRequest;
 use Swoole\Http\Response as SwooleHttpResponse;

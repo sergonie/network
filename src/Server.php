@@ -1,22 +1,22 @@
 <?php
 declare(strict_types=1);
 
-namespace Igni\Network;
+namespace Sergonie\Network;
 
 use Igni\Exception\RuntimeException;
-use Igni\Network\Exception\ClientException;
-use Igni\Network\Exception\ServerException;
-use Igni\Network\Server\Client;
-use Igni\Network\Server\Configuration;
-use Igni\Network\Server\HandlerFactory;
-use Igni\Network\Server\Listener;
-use Igni\Network\Server\LogWriter;
-use Igni\Network\Server\OnCloseListener;
-use Igni\Network\Server\OnConnectListener;
-use Igni\Network\Server\OnReceiveListener;
-use Igni\Network\Server\OnShutdownListener;
-use Igni\Network\Server\OnStartListener;
-use Igni\Network\Server\ServerStats;
+use Sergonie\Network\Exception\ClientException;
+use Sergonie\Network\Exception\ServerException;
+use Sergonie\Network\Server\Client;
+use Sergonie\Network\Server\Configuration;
+use Sergonie\Network\Server\HandlerFactory;
+use Sergonie\Network\Server\Listener;
+use Sergonie\Network\Server\LogWriter;
+use Sergonie\Network\Server\OnCloseListener;
+use Sergonie\Network\Server\OnConnectListener;
+use Sergonie\Network\Server\OnReceiveListener;
+use Sergonie\Network\Server\OnShutdownListener;
+use Sergonie\Network\Server\OnStartListener;
+use Sergonie\Network\Server\ServerStats;
 use Psr\Log\LoggerInterface;
 use SplQueue;
 use Swoole\Server as SwooleServer;
@@ -26,7 +26,7 @@ use function extension_loaded;
 /**
  * Http server implementation based on swoole extension.
  *
- * @package Igni\Http
+ * @package Sergonie\Http
  */
 class Server implements HandlerFactory
 {

@@ -2,15 +2,15 @@
 
 declare(strict_types=1);
 
-namespace Igni\Network\Server;
+namespace Sergonie\Network\Server;
 
 use Igni\Exception\InvalidArgumentException;
-use Igni\Network\Exception\ConfigurationException;
+use Sergonie\Network\Exception\ConfigurationException;
 
 /**
  * Class ServerConfiguration
  *
- * @package Igni\Http\Server
+ * @package Sergonie\Http\Server
  */
 class Configuration
 {

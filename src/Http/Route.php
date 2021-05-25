@@ -1,11 +1,11 @@
 <?php declare(strict_types=1);
 
-namespace Igni\Network\Http;
+namespace Sergonie\Network\Http;
 
 /**
  * Proxy class for symfony's route.
  *
- * @package Igni\Network\Http
+ * @package Sergonie\Network\Http
  */
 class Route
 {

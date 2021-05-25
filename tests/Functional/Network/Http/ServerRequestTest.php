@@ -2,7 +2,7 @@
 
 namespace Igni\Tests\Functional\Network\Http;
 
-use Igni\Network\Http\ServerRequest;
+use Sergonie\Network\Http\ServerRequest;
 use Mockery;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\UploadedFileInterface;

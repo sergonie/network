@@ -1,8 +1,8 @@
 <?php declare(strict_types=1);
 
-namespace Igni\Network\Server;
+namespace Sergonie\Network\Server;
 
-use Igni\Network\Server;
+use Sergonie\Network\Server;
 
 /**
  * The event happens when the server shuts down

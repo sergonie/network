@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Igni\Network\Http;
+namespace Sergonie\Network\Http;
 
 use DOMDocument;
 use Igni\Exception\RuntimeException;
-use Igni\Network\Exception\InvalidArgumentException;
+use Sergonie\Network\Exception\InvalidArgumentException;
 use JsonSerializable;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\StreamInterface;
@@ -22,7 +22,7 @@ use function json_encode;
  * Utilizes zend/diactoros implementation.
  *
  * @see ResponseInterface
- * @package Igni\Http
+ * @package Sergonie\Http
  */
 class Response implements ResponseInterface
 {

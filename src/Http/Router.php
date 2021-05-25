@@ -1,11 +1,11 @@
 <?php declare(strict_types=1);
 
-namespace Igni\Network\Http;
+namespace Sergonie\Network\Http;
 
 /**
  * Responsible for aggregating routes and forwarding request between framework and application layer.
  *
- * @package Igni\Network\Http
+ * @package Sergonie\Network\Http
  */
 interface Router
 {

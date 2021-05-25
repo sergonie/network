@@ -1,11 +1,11 @@
 <?php declare(strict_types=1);
 
-namespace Igni\Network\Server;
+namespace Sergonie\Network\Server;
 
 /**
  * Value class that aggregates server's statistics.
  *
- * @package Igni\Network\Server
+ * @package Sergonie\Network\Server
  */
 class ServerStats
 {

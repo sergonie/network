@@ -2,9 +2,9 @@
 
 namespace Igni\Tests\Functional\Network\Server;
 
-use Igni\Network\Exception\ClientException;
-use Igni\Network\Server\Client;
-use Igni\Network\Server\ClientInfo;
+use Sergonie\Network\Exception\ClientException;
+use Sergonie\Network\Server\Client;
+use Sergonie\Network\Server\ClientInfo;
 use Mockery;
 use PHPUnit\Framework\TestCase;
 use Swoole\Server;

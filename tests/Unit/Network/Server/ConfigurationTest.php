@@ -2,8 +2,8 @@
 
 namespace Igni\Tests\Unit\Network\Server;
 
-use Igni\Network\Exception\ConfigurationException;
-use Igni\Network\Server\Configuration;
+use Sergonie\Network\Exception\ConfigurationException;
+use Sergonie\Network\Server\Configuration;
 use PHPUnit\Framework\TestCase;
 
 final class ConfigurationTest extends TestCase

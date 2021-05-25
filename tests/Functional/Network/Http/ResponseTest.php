@@ -3,8 +3,8 @@
 namespace Igni\Tests\Functional\Network\Http;
 
 use Igni\Exception\RuntimeException;
-use Igni\Network\Exception\InvalidArgumentException;
-use Igni\Network\Http\Response;
+use Sergonie\Network\Exception\InvalidArgumentException;
+use Sergonie\Network\Http\Response;
 use PHPUnit\Framework\TestCase;
 use JsonSerializable;
 

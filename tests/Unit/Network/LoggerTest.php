@@ -2,7 +2,7 @@
 
 namespace Igni\Tests\Unit\Network\Server;
 
-use Igni\Network\Server\Logger;
+use Sergonie\Network\Server\Logger;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
 

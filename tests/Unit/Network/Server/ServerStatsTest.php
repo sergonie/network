@@ -2,7 +2,7 @@
 
 namespace Igni\Tests\Functional\Network\Server;
 
-use Igni\Network\Server\ServerStats;
+use Sergonie\Network\Server\ServerStats;
 use PHPUnit\Framework\TestCase;
 
 final class ServerStatsTest extends TestCase

@@ -1,8 +1,8 @@
 <?php declare(strict_types=1);
 
-namespace Igni\Network\Http;
+namespace Sergonie\Network\Http;
 
-use Igni\Network\Exception\InvalidArgumentException;
+use Sergonie\Network\Exception\InvalidArgumentException;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\StreamInterface;
 use Psr\Http\Message\UriInterface;
@@ -14,7 +14,7 @@ use Laminas\Diactoros\Uri;
  * Utilizes zend/diactoros implementation.
  *
  * @see RequestInterface
- * @package Igni\Http
+ * @package Sergonie\Http
  */
 class Request implements RequestInterface
 {

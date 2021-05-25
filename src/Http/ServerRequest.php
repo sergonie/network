@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace Igni\Network\Http;
+namespace Sergonie\Network\Http;
 
 use InvalidArgumentException;
 use Psr\Http\Message\ServerRequestInterface;

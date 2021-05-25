@@ -1,10 +1,10 @@
 <?php declare(strict_types=1);
 
-namespace Igni\Network\Http\Middleware;
+namespace Sergonie\Network\Http\Middleware;
 
 use ErrorException;
-use Igni\Network\Exception\HttpException;
-use Igni\Network\Http\Response;
+use Sergonie\Network\Exception\HttpException;
+use Sergonie\Network\Http\Response;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
@@ -16,7 +16,7 @@ use Throwable;
  * it will appear here. Middleware will catch it and return response with status code (500) and exception message
  * as a body.
  *
- * @package Igni\Http\Middleware
+ * @package Sergonie\Http\Middleware
  */
 final class ErrorMiddleware implements MiddlewareInterface
 {

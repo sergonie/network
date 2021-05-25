@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace Igni\Network\Server;
+namespace Sergonie\Network\Server;
 
 use Swoole\Server;
 

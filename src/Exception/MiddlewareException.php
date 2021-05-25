@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace Igni\Network\Exception;
+namespace Sergonie\Network\Exception;
 
 use Igni\Exception\RuntimeException;
 use Psr\Http\Message\ResponseInterface;

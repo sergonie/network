@@ -1,8 +1,8 @@
 <?php declare(strict_types=1);
 
-namespace Igni\Network\Http\Middleware;
+namespace Sergonie\Network\Http\Middleware;
 
-use Igni\Network\Exception\MiddlewareException;
+use Sergonie\Network\Exception\MiddlewareException;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;

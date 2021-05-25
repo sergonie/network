@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace Igni\Network\Http;
+namespace Sergonie\Network\Http;
 
 use Igni\Exception\InvalidArgumentException;
 use Psr\Http\Message\StreamInterface;
@@ -11,7 +11,7 @@ use function is_string;
 use function is_resource;
 
 /**
- * @package Igni\Http
+ * @package Sergonie\Http
  */
 class Stream extends BaseStream
 {

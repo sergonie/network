@@ -1,11 +1,11 @@
 <?php declare(strict_types=1);
 
-namespace Igni\Network\Exception;
+namespace Sergonie\Network\Exception;
 
 use Igni\Exception\RuntimeException;
-use Igni\Network\Http\Response;
-use Igni\Network\Http\Route;
-use Igni\Network\Http\Router;
+use Sergonie\Network\Http\Response;
+use Sergonie\Network\Http\Route;
+use Sergonie\Network\Http\Router;
 use Psr\Http\Message\ResponseInterface;
 
 class RouterException extends RuntimeException implements HttpException

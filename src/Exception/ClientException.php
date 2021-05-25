@@ -1,8 +1,8 @@
 <?php declare(strict_types=1);
 
-namespace Igni\Network\Exception;
+namespace Sergonie\Network\Exception;
 
-use Igni\Network\Server\Client;
+use Sergonie\Network\Server\Client;
 
 class ClientException extends ServerException implements NetworkException
 {
