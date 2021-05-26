@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace Igni\Tests\Functional\Network\Http;
+namespace Sergonie\Tests\Functional\Network\Http;
 
 use Sergonie\Network\Http\ServerRequest;
 use Mockery;

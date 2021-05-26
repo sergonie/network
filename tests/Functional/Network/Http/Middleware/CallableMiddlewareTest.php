@@ -1,12 +1,12 @@
 <?php declare(strict_types=1);
 
-namespace Igni\Tests\Functional\Network\Http\Middleware;
+namespace Sergonie\Tests\Functional\Network\Http\Middleware;
 
 use Igni\Exception\RuntimeException;
 use Sergonie\Network\Exception\MiddlewareException;
 use Sergonie\Network\Http\Middleware\CallableMiddleware;
 use Sergonie\Network\Http\ServerRequest;
-use Igni\Tests\Fixtures\CustomHttpException;
+use Sergonie\Tests\Fixtures\CustomHttpException;
 use Sergonie\Network\Http\Middleware\ErrorMiddleware;
 use Mockery;
 use PHPUnit\Framework\TestCase;

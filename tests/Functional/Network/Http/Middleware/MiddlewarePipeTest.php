@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace Igni\Tests\Functional\Network\Http\Middleware;
+namespace Sergonie\Tests\Functional\Network\Http\Middleware;
 
 use Sergonie\Network\Exception\MiddlewareException;
 use Sergonie\Network\Http\Middleware\MiddlewarePipe;

@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace Igni\Tests\Functional\Network\Http;
+namespace Sergonie\Tests\Functional\Network\Http;
 
 use Igni\Exception\RuntimeException;
 use Sergonie\Network\Exception\InvalidArgumentException;

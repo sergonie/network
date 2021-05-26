@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace Igni\Tests\Functional\Network;
+namespace Sergonie\Tests\Functional\Network;
 
 use Closure;
 use Sergonie\Network\Exception\ClientException;

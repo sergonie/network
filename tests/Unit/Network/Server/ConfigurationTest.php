@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace Igni\Tests\Unit\Network\Server;
+namespace Sergonie\Tests\Unit\Network\Server;
 
 use Sergonie\Network\Exception\ConfigurationException;
 use Sergonie\Network\Server\Configuration;

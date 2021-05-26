@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace Igni\Tests\Functional\Network\Server;
+namespace Sergonie\Tests\Functional\Network\Server;
 
 use Sergonie\Network\Server\ServerStats;
 use PHPUnit\Framework\TestCase;

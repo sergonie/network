@@ -2,13 +2,13 @@
 
 require_once __DIR__ . '/../vendor/autoload.php';
 
-use Igni\Network\Server\Configuration;
-use Igni\Network\Server\HttpServer;
-use Igni\Network\Server\OnRequestListener;
+use Sergonie\Network\Server\Configuration;
+use Sergonie\Network\Server\HttpServer;
+use Sergonie\Network\Server\OnRequestListener;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Igni\Network\Server\Client;
-use Igni\Network\Http\Stream;
+use Sergonie\Network\Server\Client;
+use Sergonie\Network\Http\Stream;
 
 $configuration = new Configuration(8080);
 $server = new HttpServer($configuration);

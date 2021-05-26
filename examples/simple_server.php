@@ -2,9 +2,9 @@
 
 require_once __DIR__ . '/../vendor/autoload.php';
 
-use Igni\Network\Server;
-use Igni\Network\Server\Client;
-use Igni\Network\Server\Configuration;
+use Sergonie\Network\Server;
+use Sergonie\Network\Server\Client;
+use Sergonie\Network\Server\Configuration;
 
 $configuration = new Configuration(8080);
 $server = new Server($configuration);
