@@ -2,15 +2,14 @@
 
 namespace Sergonie\Network\Server;
 
+use Psr\Log\LoggerInterface;
 use Sergonie\Network\Exception\HttpException;
 use Sergonie\Network\Http\Response;
 use Sergonie\Network\Http\ServerRequest;
 use Sergonie\Network\Server;
-use Psr\Log\LoggerInterface;
 use Swoole\Http\Request as SwooleHttpRequest;
 use Swoole\Http\Response as SwooleHttpResponse;
 use Swoole\Http\Server as SwooleHttpServer;
-
 use Throwable;
 
 use function explode;
@@ -19,12 +18,9 @@ use function implode;
 use function in_array;
 use function strtolower;
 
-class HttpServer extends Server implements HandlerFactory
+class HttpServer extends Server
 {
-    /**
-     * @var int
-     */
-    private $compressionLevel = 0;
+    private int $compressionLevel = 0;
 
     public function __construct(Configuration $settings = null, LoggerInterface $logger = null, HandlerFactory $handlerFactory = null)
     {

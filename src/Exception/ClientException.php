@@ -4,7 +4,7 @@ namespace Sergonie\Network\Exception;
 
 use Sergonie\Network\Server\Client;
 
-class ClientException extends ServerException implements NetworkException
+class ClientException extends ServerException
 {
     public static function forSendFailure(Client $client, string $data): self
     {

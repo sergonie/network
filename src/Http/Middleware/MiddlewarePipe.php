@@ -2,11 +2,11 @@
 
 namespace Sergonie\Network\Http\Middleware;
 
-use Sergonie\Network\Exception\MiddlewareException;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
+use Sergonie\Network\Exception\MiddlewareException;
 use SplQueue;
 
 /**
@@ -14,7 +14,7 @@ use SplQueue;
  */
 class MiddlewarePipe implements MiddlewareInterface, RequestHandlerInterface
 {
-    protected $pipeline;
+    protected SplQueue $pipeline;
 
     public function __construct(SplQueue $pipeline = null)
     {

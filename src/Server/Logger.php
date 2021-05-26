@@ -54,6 +54,9 @@ class Logger implements LoggerInterface
         $this->log(LogLevel::DEBUG, $message, $context);
     }
 
+    /**
+     * @throws \Exception
+     */
     public function log($level, $message, array $context = []): void
     {
         foreach ($context as $key => $value) {

@@ -3,14 +3,14 @@
 namespace Sergonie\Network\Exception;
 
 use Igni\Exception\RuntimeException;
+use Psr\Http\Message\ResponseInterface;
 use Sergonie\Network\Http\Response;
 use Sergonie\Network\Http\Route;
 use Sergonie\Network\Http\Router;
-use Psr\Http\Message\ResponseInterface;
 
 class RouterException extends RuntimeException implements HttpException
 {
-    private $httpStatus;
+    private int $httpStatus;
 
     public static function noRouteMatchesRequestedUri(string $uri, string $method): self
     {
@@ -19,11 +19,17 @@ class RouterException extends RuntimeException implements HttpException
         return $exception;
     }
 
-    public static function methodNotAllowed(string $uri, array $allowedMethods): self
-    {
-        $allowedMethods = implode(', ', $allowedMethods);
-        $exception = new self("This uri `$uri` allows only $allowedMethods http methods.");
+    public static function methodNotAllowed(
+        string $uri,
+        array $allowedMethods
+    ): self {
+        $exception = new self(
+            sprintf(
+                'This uri `%s` allows only %s http methods.',
+                $uri, implode(', ', $allowedMethods)
+            ));
         $exception->httpStatus = 405;
+
         return $exception;
     }
 
@@ -37,6 +43,7 @@ class RouterException extends RuntimeException implements HttpException
             get_class($given)
         ));
         $exception->httpStatus = 500;
+
         return $exception;
     }
 

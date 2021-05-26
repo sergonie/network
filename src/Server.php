@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace Sergonie\Network;
 
 use Igni\Exception\RuntimeException;
+use Psr\Log\LoggerInterface;
 use Sergonie\Network\Exception\ClientException;
 use Sergonie\Network\Exception\ServerException;
 use Sergonie\Network\Server\Client;
@@ -17,7 +18,6 @@ use Sergonie\Network\Server\OnReceiveListener;
 use Sergonie\Network\Server\OnShutdownListener;
 use Sergonie\Network\Server\OnStartListener;
 use Sergonie\Network\Server\ServerStats;
-use Psr\Log\LoggerInterface;
 use SplQueue;
 use Swoole\Server as SwooleServer;
 
@@ -196,9 +196,9 @@ class Server implements HandlerFactory
         $this->createOnReceiveListener();
     }
 
-    private function createClient($handler, int $clientId): Client
+    private function createClient($handler, int $clientId): void
     {
-        return $this->clients[$clientId] = new Client($handler, $clientId);
+        $this->clients[$clientId] = new Client($handler, $clientId);
     }
 
     private function destroyClient(int $clientId): void

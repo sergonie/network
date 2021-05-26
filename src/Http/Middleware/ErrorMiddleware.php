@@ -3,12 +3,12 @@
 namespace Sergonie\Network\Http\Middleware;
 
 use ErrorException;
-use Sergonie\Network\Exception\HttpException;
-use Sergonie\Network\Http\Response;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
+use Sergonie\Network\Exception\HttpException;
+use Sergonie\Network\Http\Response;
 use Throwable;
 
 /**
@@ -33,11 +33,13 @@ final class ErrorMiddleware implements MiddlewareInterface
     }
 
     /**
+     * @param  ServerRequestInterface  $request
+     * @param  RequestHandlerInterface  $next
+     *
+     * @return ResponseInterface
+     * @throws \ErrorException
      * @see MiddlewareInterface::process
      *
-     * @param ServerRequestInterface $request
-     * @param RequestHandlerInterface $next
-     * @return ResponseInterface
      */
     public function process(ServerRequestInterface $request, RequestHandlerInterface $next): ResponseInterface
     {
@@ -67,7 +69,9 @@ final class ErrorMiddleware implements MiddlewareInterface
 
     private function setErrorHandler(): void
     {
-        set_error_handler(function (int $number, string $message, string $file, int $line) {
+        set_error_handler(/**
+         * @throws \ErrorException
+         */ static function (int $number, string $message, string $file, int $line) {
 
             if (!(error_reporting() & $number)) {
                 return;

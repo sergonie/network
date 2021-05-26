@@ -13,15 +13,8 @@ use SplQueue;
  */
 final class Next implements RequestHandlerInterface
 {
-    /**
-     * @var RequestHandlerInterface
-     */
-    private $parent;
-
-    /**
-     * @var SplQueue
-     */
-    private $queue;
+    private RequestHandlerInterface $parent;
+    private SplQueue $queue;
 
     /**
      * Next constructor.
