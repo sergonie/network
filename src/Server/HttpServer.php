@@ -69,8 +69,8 @@ class HttpServer extends Server
             $queue = clone $this->listeners[OnRequestListener::class];
 
             try {
-                /** @var OnRequestListener $listener */
                 while (!$queue->isEmpty() && $listener = $queue->pop()) {
+                    /** @var OnRequestListener $listener */
                     $psrResponse = $listener->onRequest($this->getClient($request->fd), $psrRequest, $psrResponse);
                 }
             } catch (HttpException $exception) {

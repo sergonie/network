@@ -258,7 +258,7 @@ class Response implements ResponseInterface
     /**
      * Factories response instance from json data.
      *
-     * @param  array|\JsonSerializable  $data
+     * @param  array|JsonSerializable $data
      * @param  int  $status
      * @param  array  $headers
      *

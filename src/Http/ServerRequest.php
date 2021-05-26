@@ -33,15 +33,15 @@ class ServerRequest extends Request implements ServerRequestInterface
      * @param  array  $serverParams  Server parameters, typically from $_SERVER
      * @param  array  $uploadedFiles  Upload file information, a tree of
      *     UploadedFiles
-     * @param  null|string  $uri  URI for the request, if any.
-     * @param  null|string  $method  HTTP method for the request, if any.
+     * @param  string|null  $uri  URI for the request, if any.
+     * @param  string  $method  HTTP method for the request, if any.
      * @param  string|resource|StreamInterface  $body  Messages body, if any.
      * @param  array  $headers  Headers for the message, if any.
      *
      * @throws \InvalidArgumentException for any invalid value.
      */
     public function __construct(
-        string $uri = null,
+        ?string $uri = null,
         string $method = self::METHOD_GET,
         $body = 'php://input',
         array $headers = [],

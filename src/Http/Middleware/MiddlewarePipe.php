@@ -66,7 +66,7 @@ class MiddlewarePipe implements MiddlewareInterface, RequestHandlerInterface
     /**
      * Attach middleware to the pipeline.
      *
-     * @param MiddlewareInterface|callable ...$middleware
+     * @param MiddlewareInterface ...$middleware
      */
     public function add(MiddlewareInterface ...$middleware): void
     {

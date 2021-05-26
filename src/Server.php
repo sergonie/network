@@ -70,7 +70,7 @@ class Server implements HandlerFactory
     }
 
     /**
-     * @param  int  $id
+     * @param  int $id
      *
      * @return Client
      * @throws ClientException if client was not found
@@ -216,8 +216,8 @@ class Server implements HandlerFactory
             }
 
             $queue = clone $this->listeners[OnConnectListener::class];
-            /** @var OnConnectListener $listener */
             while (!$queue->isEmpty() && $listener = $queue->pop()) {
+                /** @var OnConnectListener $listener */
                 $listener->onConnect($this, $this->getClient($clientId));
             }
         });
@@ -228,8 +228,8 @@ class Server implements HandlerFactory
         $this->handler->on('Close', function ($handler, int $clientId) {
             if (isset($this->listeners[OnCloseListener::class])) {
                 $queue = clone $this->listeners[OnCloseListener::class];
-                /** @var OnCloseListener $listener */
                 while (!$queue->isEmpty() && $listener = $queue->pop()) {
+                    /** @var OnCloseListener $listener */
                     $listener->onClose($this, $this->getClient($clientId));
                 }
             }
@@ -246,11 +246,11 @@ class Server implements HandlerFactory
             }
 
             $queue = clone $this->listeners[OnShutdownListener::class];
-
-            /** @var OnShutdownListener $listener */
             while (!$queue->isEmpty() && $listener = $queue->pop()) {
+                /** @var OnShutdownListener $listener */
                 $listener->onShutdown($this);
             }
+
             $this->clients = [];
         });
     }
@@ -263,8 +263,8 @@ class Server implements HandlerFactory
             }
 
             $queue = clone $this->listeners[OnStartListener::class];
-            /** @var OnStartListener $listener */
             while (!$queue->isEmpty() && $listener = $queue->pop()) {
+                /** @var OnStartListener $listener */
                 $listener->onStart($this);
             }
         });
@@ -279,9 +279,8 @@ class Server implements HandlerFactory
                 }
 
                 $queue = clone $this->listeners[OnReceiveListener::class];
-
-                /** @var OnReceiveListener $listener */
                 while (!$queue->isEmpty() && $listener = $queue->pop()) {
+                    /** @var OnReceiveListener $listener */
                     $listener->onReceive($this, $this->getClient($clientId),
                         $data);
                 }

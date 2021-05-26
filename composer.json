@@ -23,7 +23,7 @@
     }
   ],
   "scripts": {
-    "phpstan": "vendor/bin/phpstan analyse src --level=0",
+    "phpstan": "vendor/bin/phpstan analyse src --level=4 -c phpstan.neon",
     "coverage": "vendor/bin/phpunit --coverage-html ./coverage"
   },
   "require": {

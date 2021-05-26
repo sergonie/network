@@ -2,12 +2,11 @@
 
 namespace Sergonie\Network\Http;
 
-use Sergonie\Network\Exception\InvalidArgumentException;
-use Psr\Http\Message\RequestInterface;
-use Psr\Http\Message\StreamInterface;
-use Psr\Http\Message\UriInterface;
 use Laminas\Diactoros\RequestTrait;
 use Laminas\Diactoros\Uri;
+use Psr\Http\Message\RequestInterface;
+use Psr\Http\Message\StreamInterface;
+use Sergonie\Network\Exception\InvalidArgumentException;
 
 /**
  * PSR-7 implementation of RequestInterface.
@@ -40,24 +39,13 @@ class Request implements RequestInterface
      * @param array $headers Headers for the message, if any.
      * @throws InvalidArgumentException for any invalid value.
      */
-    public function __construct(string $uri = null, string $method = self::METHOD_GET, $body = 'php://temp', array $headers = [])
+    public function __construct(?string $uri = null, string $method = self::METHOD_GET, $body = 'php://temp', array $headers = [])
     {
-        $this->validateUri($uri);
-        $this->uri = $uri ? new Uri($uri) : new Uri();
+        $this->uri = new Uri($uri ?? '');
         $this->method = $method;
         $this->stream = Stream::create($body, 'wb+');
 
         $headers['Host'] = $headers['Host'] ?? [$this->getHostFromUri()];
         $this->setHeaders($headers);
-    }
-
-    /** @param UriInterface|string|null */
-    private function validateUri($uri)
-    {
-        if (!$uri instanceof UriInterface && !is_string($uri) && !is_null($uri)) {
-            throw new InvalidArgumentException(
-                'Invalid URI provided; must be null, a string, or a Psr\Http\Message\UriInterface instance'
-            );
-        }
     }
 }
