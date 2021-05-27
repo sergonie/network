@@ -37,7 +37,7 @@ final class HttpServerTest extends TestCase
             ->shouldReceive('onRequest')
             ->withArgs(function(Client $client, ServerRequestInterface $request, ResponseInterface $response) {
                 self::assertSame(1, $client->getId());
-                self::assertSame(200, $response->getStatusCode());
+                self::assertSame(204, $response->getStatusCode());
                 return true;
             })
             ->andReturn(Response::asText('Test 1'));

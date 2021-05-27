@@ -58,8 +58,8 @@ XML;
     public function testCreateEmpty(): void
     {
         $empty = Response::empty();
-        self::assertSame(['text/plain'], $empty->getHeader('Content-Type'));
-        self::assertSame(200, $empty->getStatusCode());
+        self::assertSame([], $empty->getHeader('Content-Type'));
+        self::assertSame(204, $empty->getStatusCode());
         self::assertSame('', (string) $empty->getBody());
     }
 
@@ -94,7 +94,7 @@ XML;
         $response = Response::empty();
         $newResponse = $response->withStatus(404);
         self::assertNotSame($response, $newResponse);
-        self::assertSame(200, $response->getStatusCode());
+        self::assertSame(204, $response->getStatusCode());
         self::assertSame(404, $newResponse->getStatusCode());
     }
 

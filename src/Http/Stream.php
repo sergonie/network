@@ -1,57 +1,263 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Sergonie\Network\Http;
 
-use Igni\Exception\InvalidArgumentException;
+use InvalidArgumentException;
 use Psr\Http\Message\StreamInterface;
-use Laminas\Diactoros\Stream as BaseStream;
+use RuntimeException;
+use Swoole\Http\Request as SwooleHttpRequest;
 
-use function strpos;
-use function is_string;
-use function is_resource;
+use function strlen;
+use function substr;
 
-/**
- * @package Sergonie\Http
- */
-class Stream extends BaseStream
+use const SEEK_CUR;
+use const SEEK_END;
+use const SEEK_SET;
+
+class Stream implements StreamInterface
 {
-    public static function fromString(string $content): self
+    /**
+     * Memoized body content, as pulled via SwooleHttpRequest::rawContent().
+     */
+    private ?string $body = null;
+
+    /**
+     * Length of the request body content.
+     */
+    private ?int $bodySize = null;
+
+    /**
+     * Index to which we have seek'd or read within the request body.
+     */
+    private int $index = 0;
+
+    /**
+     * Swoole request containing the body contents.
+     */
+    private SwooleHttpRequest $request;
+
+    public function __construct(SwooleHttpRequest $request)
     {
-        $stream = new self('php://temp', 'wb+');
-        $stream->write($content);
-        $stream->rewind();
-
-        return $stream;
-    }
-
-    public static function fromFile(string $path, string $mode = 'r'): self
-    {
-        if ($path === 'php://input') {
-            return new self($path, 'r');
-        }
-
-        return new self($path, $mode);
+        $this->request = $request;
     }
 
     /**
-     * @param string|resource|StreamInterface $stream
+     * @return string
      */
-    public static function create($stream, string $mode = 'r'): StreamInterface
+    public function getContents()
     {
-        if (!is_string($stream) && !is_resource($stream) && !$stream instanceof StreamInterface) {
-            throw new InvalidArgumentException(
-                'Stream must be a string stream resource identifier, '
-                . 'an actual stream resource, '
-                . 'or a Psr\Http\Message\StreamInterface implementation'
-            );
+        // If we're at the end of the string, return an empty string.
+        if ($this->eof()) {
+            return '';
         }
 
-        if (is_string($stream) && (empty($stream) || 0 !== strpos('php://', $stream))) {
-            return self::fromString($stream);
+        $size = $this->getSize();
+        // If we have not content, return an empty string
+        if ($size === 0) {
+            return '';
         }
 
-        return $stream instanceof StreamInterface
-            ? $stream
-            : self::fromFile($stream, $mode);
+        // Memoize index so we can use it to get a substring later,
+        // if required.
+        $index = $this->index;
+
+        // Set the internal index to the end of the string
+        $this->index = $size;
+
+        if ($index && !is_null($this->body)) {
+            // Per PSR-7 spec, if we have seeked or read to a given position in
+            // the string, we should only return the contents from that position
+            // forward.
+            $remaining = substr($this->body, $index);
+
+            return $remaining ?: '';
+        }
+
+        // If we're at the start of the content, return all of it.
+        return (string) $this->body;
+    }
+
+    /**
+     * @return string
+     */
+    public function __toString()
+    {
+        if (is_null($this->body)) {
+            $this->initRawContent();
+        }
+
+        return $this->body ?? '';
+    }
+
+    /**
+     * @return int
+     */
+    public function getSize()
+    {
+        if (is_null($this->bodySize)) {
+            $this->bodySize = strlen((string)$this);
+        }
+
+        return $this->bodySize;
+    }
+
+    /**
+     * @return int
+     */
+    public function tell()
+    {
+        return $this->index;
+    }
+
+    /**
+     * @return bool
+     */
+    public function eof()
+    {
+        return $this->index >= $this->getSize();
+    }
+
+    /**
+     * @return bool Always returns true.
+     */
+    public function isReadable()
+    {
+        return true;
+    }
+
+    /**
+     * @param  int  $length
+     *
+     * @return string
+     */
+    public function read($length)
+    {
+        $result = substr((string)$this, $this->index, $length);
+
+        // Reset index based on legnth; should not be > EOF position.
+        $size = $this->getSize();
+        $this->index = $this->index + $length >= $size
+            ? $size
+            : $this->index + $length;
+
+        return $result;
+    }
+
+    /**
+     * @return bool Always returns true.
+     */
+    public function isSeekable()
+    {
+        return true;
+    }
+
+    /**
+     * @param  int  $offset
+     * @param  int  $whence
+     *
+     * @psalm-return void
+     */
+    public function seek($offset, $whence = SEEK_SET)
+    {
+        $size = $this->getSize();
+        switch ($whence) {
+            case SEEK_SET:
+                if ($offset >= $size) {
+                    throw new RuntimeException(
+                        'Offset cannot be longer than content size'
+                    );
+                }
+                $this->index = $offset;
+                break;
+            case SEEK_CUR:
+                if ($offset + $this->index >= $size) {
+                    throw new RuntimeException(
+                        'Offset + current position cannot be longer than content size when using SEEK_CUR'
+                    );
+                }
+                $this->index += $offset;
+                break;
+            case SEEK_END:
+                if ($offset + $size >= $size) {
+                    throw new RuntimeException(
+                        'Offset must be a negative number to be under the content size when using SEEK_END'
+                    );
+                }
+                $this->index = $size + $offset;
+                break;
+            default:
+                throw new InvalidArgumentException(
+                    'Invalid $whence argument provided; must be one of SEEK_CUR,'
+                    .'SEEK_END, or SEEK_SET'
+                );
+        }
+    }
+
+    /**
+     * @psalm-return void
+     */
+    public function rewind()
+    {
+        $this->index = 0;
+    }
+
+    /**
+     * @return bool Always returns false.
+     */
+    public function isWritable()
+    {
+        return false;
+    }
+
+    // phpcs:disable Squiz.Commenting.FunctionComment.InvalidNoReturn
+
+    /**
+     * @param  string  $string
+     *
+     * @return int
+     * @throws RuntimeException Always throws, as not writable.
+     */
+    public function write($string)
+    {
+        throw new RuntimeException('Stream is not writable');
+    }
+
+    // phpcs:enable
+
+    /**
+     * @param  string  $key
+     *
+     * @return null|array
+     */
+    public function getMetadata($key = null)
+    {
+        return $key ? null : [];
+    }
+
+    /**
+     * @return SwooleHttpRequest|resource|null
+     */
+    public function detach()
+    {
+        return $this->request;
+    }
+
+    public function close()
+    {
+    }
+
+    /**
+     * Memoize the request raw content in the $body property, if not already
+     * done.
+     */
+    private function initRawContent(): void
+    {
+        if ($this->body) {
+            return;
+        }
+
+        $this->body = $this->request->rawContent() ?: '';
     }
 }

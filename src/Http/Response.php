@@ -8,6 +8,7 @@ use DOMDocument;
 use Igni\Exception\RuntimeException;
 use JsonSerializable;
 use Laminas\Diactoros\MessageTrait;
+use Laminas\Diactoros\StreamFactory;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\StreamInterface;
 use Sergonie\Network\Exception\InvalidArgumentException;
@@ -179,10 +180,40 @@ class Response implements ResponseInterface
         int $status = self::HTTP_OK,
         array $headers = []
     ) {
-        $this->stream = Stream::create($body, 'wb+');
         $this->statusCode = $status;
         $this->reasonPhrase = self::$phrases[$this->statusCode];
         $this->setHeaders($headers);
+
+        $this->stream = $this->createStream($body);
+    }
+
+    protected function createStream($stream): StreamInterface
+    {
+        $factory = new StreamFactory();
+
+        if (is_string($stream)
+            && (empty($stream) || 0 !== strpos('php://', $stream))
+        ) {
+            return $factory->createStream($stream);
+        }
+
+        if (is_resource($stream)) {
+            return $factory->createStreamFromResource($stream);
+        }
+
+        if ($stream instanceof StreamInterface) {
+            return $stream;
+        }
+
+        if (is_file($stream)) {
+            return $factory->createStreamFromFile($stream);
+        }
+
+        throw new InvalidArgumentException(
+            'Stream must be a string stream resource identifier, '
+            .'an actual stream resource, '
+            .'or a Psr\Http\Message\StreamInterface implementation'
+        );
     }
 
     /**
@@ -258,7 +289,7 @@ class Response implements ResponseInterface
     /**
      * Factories response instance from json data.
      *
-     * @param  array|JsonSerializable $data
+     * @param  array|JsonSerializable  $data
      * @param  int  $status
      * @param  array  $headers
      *
@@ -358,11 +389,9 @@ class Response implements ResponseInterface
      * @return Response
      */
     public static function empty(
-        int $status = self::HTTP_OK,
+        int $status = self::HTTP_NO_CONTENT,
         array $headers = []
     ): self {
-        $headers['Content-Type'] = 'text/plain';
-
         return new Response('', $status, $headers);
     }
 }

@@ -1,24 +1,17 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Sergonie\Network\Http;
 
-use Laminas\Diactoros\RequestTrait;
-use Laminas\Diactoros\Uri;
-use Psr\Http\Message\RequestInterface;
-use Psr\Http\Message\StreamInterface;
-use Sergonie\Network\Exception\InvalidArgumentException;
+use function Laminas\Diactoros\marshalMethodFromSapi;
+use function Laminas\Diactoros\marshalProtocolVersionFromSapi;
+use function Laminas\Diactoros\marshalUriFromSapi;
+use function Laminas\Diactoros\normalizeServer;
+use function Laminas\Diactoros\normalizeUploadedFiles;
 
-/**
- * PSR-7 implementation of RequestInterface.
- * Utilizes zend/diactoros implementation.
- *
- * @see RequestInterface
- * @package Sergonie\Http
- */
-class Request implements RequestInterface
+class Request extends \Laminas\Diactoros\ServerRequest
 {
-    use RequestTrait;
-
     public const METHOD_GET = 'GET';
     public const METHOD_HEAD = 'HEAD';
     public const METHOD_POST = 'POST';
@@ -29,23 +22,25 @@ class Request implements RequestInterface
     public const METHOD_PATCH = 'PATCH';
     public const METHOD_TRACE = 'TRACE';
 
-    /** @var StreamInterface */
-    private $stream;
-
-    /**
-     * @param null|string $uri URI for the request, if any.
-     * @param string $method HTTP method for the request, if any.
-     * @param string|resource|StreamInterface $body Output body, if any.
-     * @param array $headers Headers for the message, if any.
-     * @throws InvalidArgumentException for any invalid value.
-     */
-    public function __construct(?string $uri = null, string $method = self::METHOD_GET, $body = 'php://temp', array $headers = [])
+    public static function fromSwoole(\Swoole\Http\Request $request): self
     {
-        $this->uri = new Uri($uri ?? '');
-        $this->method = $method;
-        $this->stream = Stream::create($body, 'wb+');
+        $server = $request->server
+            ? normalizeServer(array_change_key_case(
+                    $request->server,
+                    CASE_UPPER)
+            ) : [];
 
-        $headers['Host'] = $headers['Host'] ?? [$this->getHostFromUri()];
-        $this->setHeaders($headers);
+        return new self(
+            $server,
+            normalizeUploadedFiles($request->files ?? []),
+            marshalUriFromSapi($server, $request->header ?? []),
+            marshalMethodFromSapi($server),
+            new Stream($request),
+            $request->header ?? [],
+            $request->cookie ?? [],
+            $request->get ?? [],
+            $request->post ?? [],
+            marshalProtocolVersionFromSapi($server)
+        );
     }
 }
