@@ -192,7 +192,7 @@ class Response implements ResponseInterface
         $factory = new StreamFactory();
 
         if (is_string($stream)
-            && (empty($stream) || 0 !== strpos('php://', $stream))
+            && (empty($stream) || strpos('php://', $stream) !== 0)
         ) {
             return $factory->createStream($stream);
         }
@@ -300,17 +300,23 @@ class Response implements ResponseInterface
         $data,
         int $status = self::HTTP_OK,
         array $headers = []
-    ): self {
-        if (!$data instanceof JsonSerializable && !is_array($data)) {
+    ): self
+    {
+        if (!is_array($data) && !$data instanceof JsonSerializable) {
             throw new InvalidArgumentException('Invalid $data provided, method expects array or instance of \JsonSerializable.');
         }
 
-        $headers['Content-Type'] = 'application/json';
+        $headers['Content-Type'] = 'application/json; charset=utf-8';
 
-        $body = json_encode($data, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT
-            | JSON_UNESCAPED_SLASHES);
-
-        return new Response($body, $status, $headers);
+        return new Response(json_encode(
+            $data,
+            JSON_HEX_TAG |
+            JSON_HEX_APOS |
+            JSON_HEX_AMP |
+            JSON_HEX_QUOT |
+            JSON_UNESCAPED_SLASHES |
+            JSON_THROW_ON_ERROR
+        ), $status, $headers);
     }
 
     /**
@@ -327,7 +333,7 @@ class Response implements ResponseInterface
         int $status = self::HTTP_OK,
         array $headers = []
     ): self {
-        $headers['Content-Type'] = 'text/plain';
+        $headers['Content-Type'] = 'text/plain; charset=utf-8';
         return new Response($text, $status, $headers);
     }
 
@@ -345,7 +351,7 @@ class Response implements ResponseInterface
         int $status = self::HTTP_OK,
         array $headers = []
     ): self {
-        $headers['Content-Type'] = 'text/html';
+        $headers['Content-Type'] = 'text/html; charset=utf-8';
 
         return new Response($html, $status, $headers);
     }
@@ -375,7 +381,7 @@ class Response implements ResponseInterface
             throw new InvalidArgumentException('Invalid $data provided, method expects valid string or instance of \SimpleXMLElement, \DOMDocument');
         }
 
-        $headers['Content-Type'] = 'text/xml';
+        $headers['Content-Type'] = 'text/xml; charset=utf-8';
 
         return new Response($body, $status, $headers);
     }
